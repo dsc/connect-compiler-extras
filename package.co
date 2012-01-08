@@ -1,0 +1,19 @@
+name                    : 'connect-compiler-extras'
+version                 : '0.1.0'
+description             : 'Extra compilers for connect-compiler -- http://github.com/dsc/connect-compiler'
+homepage                : 'http://github.com/dsc/connect-compiler-extras'
+keywords                : <[ connect middleware compiler development coffee-script coco jade stylus less css minify ]>
+author                  : 'David Schoonover <dsc@less.ly> (http://less.ly)'
+
+main                    : './compilers'
+dependencies            :
+    'connect-compiler'  : '>= 0.1.1'
+devDependencies : 
+    'coco'              : '>= 0.7.0'
+    # 'expresso'          : '>= 0.7.x'
+# scripts                 : test : 'expresso'
+repository              : type:'git', url:'git://github.com/dsc/connect-compiler-extras.git'
+bugs                    : url:'http://github.com/dsc/connect-compiler-extras/issues'
+
+engine                  : node:'>=0.4.0'
+license                 : 'MIT'

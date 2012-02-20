@@ -51,7 +51,7 @@ exports.CommonJSCompiler = CommonJSCompiler = (function(superclass){
     drop_pat = nfo.drop_pat || this.drop_pat || (drop_full
       ? this.PAT_FULL_EXT
       : this.PAT_JS_EXT);
-    mod_parts = nfo.url.slice(1).replace(drop_ext_pat, '').split('/').slice(drop_parts);
+    mod_parts = nfo.url.slice(1).replace(drop_pat, '').split('/').slice(drop_parts);
     if (mod_parts[mod_parts.length - 1] === 'index') {
       mod_parts.pop();
     }

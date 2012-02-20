@@ -47,7 +47,7 @@ class exports.CommonJSCompiler extends Compiler
         
         mod_parts = nfo.url
             .slice 1
-            .replace drop_ext_pat, ''
+            .replace drop_pat, ''
             .split '/'
             .slice drop_parts
         mod_parts.pop() if mod_parts[mod_parts.length-1] is 'index'

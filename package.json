@@ -18,10 +18,9 @@
   ],
   "author": "David Schoonover <dsc@less.ly> (http://less.ly)",
   "main": "./compilers",
-  "dependencies": {
-    "connect-compiler": ">= 0.1.1"
-  },
+  "dependencies": {},
   "devDependencies": {
+    "connect-compiler": "https://github.com/dsc/connect-compiler/tarball/master",
     "coco": ">= 0.7.0"
   },
   "repository": {
@@ -32,7 +31,7 @@
     "url": "http://github.com/dsc/connect-compiler-extras/issues"
   },
   "engine": {
-    "node": ">=0.4.0"
+    "node": ">=0.6.0"
   },
   "license": "MIT"
 }

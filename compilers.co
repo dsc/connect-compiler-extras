@@ -9,18 +9,25 @@ module.exports = exports = compiler
 
 
 class exports.CommonJSCompiler extends Compiler
-    CJS_HEADER : "require.install('{ID}', function(require, exports, module, undefined){\n\n"
-    CJS_FOOTER : "\n\n});\n"
+    CJS_HEADER   : "require.install('{ID}', function(require, exports, module, undefined){\n\n"
+    CJS_FOOTER   : "\n\n});\n"
+    PAT_FULL_EXT : /\..*$/
+    PAT_JS_EXT   : /\.mod(\.min)?\.js([?#].*)?$/i
     
     id         : 'commonjs'
     match      : /\.mod(\.min)?\.js$/i
     ext        : [ '.js', '.co', '.coffee', '.jison' ]
     destExt    : '.mod.js'
+    
     ext2wraps:
         co     : 'coco'
         coffee : 'coffee'
         jison  : 'jison'
-    drop_path_parts : 0 # allows you to drop the mountpoint if your js files live in, say, /js
+    
+    drop_full_ext   : true  # removes everything after the first dot in the basename, otherwise at most '.mod(.min)?.js'
+    drop_pat        : null  # allows you to force a pattern to drop; otherwise determined by `drop_full_ext`.
+    drop_path_parts : 0     # allows you to drop the mountpoint if your js files live in, say, /js
+    
     
     -> super ...
     
@@ -33,8 +40,16 @@ class exports.CommonJSCompiler extends Compiler
     #     path.join(destDir, pathname).replace(@match, '.mod.js')
     
     compileSync: (data) ->
-        drop = @info.drop_path_parts ? @drop_path_parts
-        mod_parts = @info.url.slice(1).replace(/\.mod(\.min)?\.js([?#].*)?$/i, '').split('/').slice(drop)
+        nfo = @info
+        drop_parts = nfo.drop_path_parts ? @drop_path_parts
+        drop_full  = nfo.drop_full_ext   ? @drop_full_ext
+        drop_pat   = nfo.drop_pat or @drop_pat or (if drop_full then @PAT_FULL_EXT else @PAT_JS_EXT)
+        
+        mod_parts = nfo.url
+            .slice 1
+            .replace drop_ext_pat, ''
+            .split '/'
+            .slice drop_parts
         mod_parts.pop() if mod_parts[mod_parts.length-1] is 'index'
         mod_id = path.normalize mod_parts.join('/')
         
@@ -51,7 +66,21 @@ class exports.PyYamlCompiler extends ExternalCompiler
     id          : 'pyyaml'
     match       : /\.json$/i
     ext         : '.yaml'
-    cmd         : "python -c 'import lessly.data.yaml_omap; import sys, yaml, json; json.dump(yaml.load(sys.stdin), sys.stdout)'"
+    
+    # If https://github.com/dsc/py-lessly is installed, use the
+    # ordered-dict YAML patch.
+    YAML_TO_JSON = """
+        try:
+            import lessly.data.yaml_omap
+        except ImportError:
+            pass
+        import sys, yaml, json
+        json.dump(yaml.load(sys.stdin), sys.stdout)
+    """
+    
+    YAML_TO_JSON : YAML_TO_JSON
+    cmd          : "python -c '#YAML_TO_JSON'"
+    
     -> super ...
 
 # class exports.BundleJSCompiler extends Compiler

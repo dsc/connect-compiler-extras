@@ -7,17 +7,19 @@ compiler = { register, Compiler, ExternalCompiler } = require 'connect-compiler'
 module.exports = exports = compiler
 
 
+### helpers ###
+
+flatten = -> it.reduce (a,b) -> [].concat a, b
 
 class exports.CommonJSCompiler extends Compiler
     CJS_HEADER   : "require.install('{ID}', function(require, exports, module, undefined){\n\n"
     CJS_FOOTER   : "\n\n});\n"
     PAT_FULL_EXT : /\..*$/
-    PAT_JS_EXT   : /\.mod(\.min)?\.js([?#].*)?$/i
+    PAT_JS_EXT   : /(\.min)?\.mod(\.min)?\.js([?#].*)?$/i
     
-    id         : 'commonjs'
-    match      : /\.mod(\.min)?\.js$/i
-    ext        : [ '.js', '.co', '.coffee', '.jison' ]
-    destExt    : '.mod.js'
+    id           : 'commonjs'
+    match        : /((?:\.min)?)\.mod((?:\.min)?)\.js$/i
+    ext          : flatten <[ .js .co .coffee .jison ]>.map -> ['$1$2'+it, it]
     
     ext2wraps:
         co     : 'coco'
@@ -83,18 +85,6 @@ class exports.PyYamlCompiler extends ExternalCompiler
     
     -> super ...
 
-# class exports.BundleJSCompiler extends Compiler
-#     id    : 'bundle_js'
-#     match : /(\.min)?\.js$/i
-#     ext   : '$1.js'
-#     options :
-#         files : [] # path files to bundle
-#         out
-#     
-#     -> super ...
-#     compile : (text, options={}, cb) ->
-#         
-#     
 
 
 # class exports.SassRubyCompiler extends ExternalCompiler

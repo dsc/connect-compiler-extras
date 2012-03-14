@@ -1,19 +1,25 @@
-var fs, path, register, Compiler, ExternalCompiler, compiler, exports, CommonJSCompiler, PyYamlCompiler, _ref, _i, _len;
+var fs, path, register, Compiler, ExternalCompiler, compiler, exports, flatten, CommonJSCompiler, PyYamlCompiler, _ref, _i, _len;
 fs = require('fs');
 path = require('path');
 compiler = (_ref = require('connect-compiler'), register = _ref.register, Compiler = _ref.Compiler, ExternalCompiler = _ref.ExternalCompiler, _ref);
 module.exports = exports = compiler;
+flatten = function(it){
+  return it.reduce(function(a, b){
+    return [].concat(a, b);
+  });
+};
 exports.CommonJSCompiler = CommonJSCompiler = (function(superclass){
   CommonJSCompiler.displayName = 'CommonJSCompiler';
   var prototype = __extend(CommonJSCompiler, superclass).prototype, constructor = CommonJSCompiler;
   prototype.CJS_HEADER = "require.install('{ID}', function(require, exports, module, undefined){\n\n";
   prototype.CJS_FOOTER = "\n\n});\n";
   prototype.PAT_FULL_EXT = /\..*$/;
-  prototype.PAT_JS_EXT = /\.mod(\.min)?\.js([?#].*)?$/i;
+  prototype.PAT_JS_EXT = /(\.min)?\.mod(\.min)?\.js([?#].*)?$/i;
   prototype.id = 'commonjs';
-  prototype.match = /\.mod(\.min)?\.js$/i;
-  prototype.ext = ['.js', '.co', '.coffee', '.jison'];
-  prototype.destExt = '.mod.js';
+  prototype.match = /((?:\.min)?)\.mod((?:\.min)?)\.js$/i;
+  prototype.ext = flatten(['.js', '.co', '.coffee', '.jison'].map(function(it){
+    return ['$1$2' + it, it];
+  }));
   prototype.ext2wraps = {
     co: 'coco',
     coffee: 'coffee',

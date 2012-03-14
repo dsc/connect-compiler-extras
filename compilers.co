@@ -64,6 +64,18 @@ class exports.CommonJSCompiler extends Compiler
         super ...
 
 
+
+/**
+ * @class As CommonJSCompiler, but uses browserify's `require.define()` rather 
+ *  than the included `require.install()`.
+ */
+class exports.CommonJSDefineCompiler extends CommonJSCompiler
+    CJS_HEADER   : "require.define('/node_modules/{ID}.js', function(require, module, exports, __dirname, __filename, undefined){\n\n"
+    id           : 'commonjs_define'
+    -> super ...
+
+
+
 class exports.PyYamlCompiler extends ExternalCompiler
     id          : 'pyyaml'
     match       : /\.json$/i
@@ -101,6 +113,6 @@ class exports.PyYamlCompiler extends ExternalCompiler
 
 
 # Register Compilers
-for compiler of [ CommonJSCompiler, PyYamlCompiler ]
+for compiler of [ CommonJSCompiler, CommonJSDefineCompiler, PyYamlCompiler ]
     register compiler
 

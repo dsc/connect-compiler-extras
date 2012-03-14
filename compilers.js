@@ -1,4 +1,4 @@
-var fs, path, register, Compiler, ExternalCompiler, compiler, exports, flatten, CommonJSCompiler, PyYamlCompiler, _ref, _i, _len;
+var fs, path, register, Compiler, ExternalCompiler, compiler, exports, flatten, CommonJSCompiler, CommonJSDefineCompiler, PyYamlCompiler, _ref, _i, _len;
 fs = require('fs');
 path = require('path');
 compiler = (_ref = require('connect-compiler'), register = _ref.register, Compiler = _ref.Compiler, ExternalCompiler = _ref.ExternalCompiler, _ref);
@@ -73,6 +73,20 @@ exports.CommonJSCompiler = CommonJSCompiler = (function(superclass){
   };
   return CommonJSCompiler;
 }(Compiler));
+/**
+ * @class As CommonJSCompiler, but uses browserify's `require.define()` rather 
+ *  than the included `require.install()`.
+ */
+exports.CommonJSDefineCompiler = CommonJSDefineCompiler = (function(superclass){
+  CommonJSDefineCompiler.displayName = 'CommonJSDefineCompiler';
+  var prototype = __extend(CommonJSDefineCompiler, superclass).prototype, constructor = CommonJSDefineCompiler;
+  prototype.CJS_HEADER = "require.define('/node_modules/{ID}.js', function(require, module, exports, __dirname, __filename, undefined){\n\n";
+  prototype.id = 'commonjs_define';
+  function CommonJSDefineCompiler(){
+    superclass.apply(this, arguments);
+  }
+  return CommonJSDefineCompiler;
+}(CommonJSCompiler));
 exports.PyYamlCompiler = PyYamlCompiler = (function(superclass){
   PyYamlCompiler.displayName = 'PyYamlCompiler';
   var YAML_TO_JSON, prototype = __extend(PyYamlCompiler, superclass).prototype, constructor = PyYamlCompiler;
@@ -87,7 +101,7 @@ exports.PyYamlCompiler = PyYamlCompiler = (function(superclass){
   }
   return PyYamlCompiler;
 }(ExternalCompiler));
-for (_i = 0, _len = (_ref = [CommonJSCompiler, PyYamlCompiler]).length; _i < _len; ++_i) {
+for (_i = 0, _len = (_ref = [CommonJSCompiler, CommonJSDefineCompiler, PyYamlCompiler]).length; _i < _len; ++_i) {
   compiler = _ref[_i];
   register(compiler);
 }

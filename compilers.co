@@ -12,7 +12,7 @@ module.exports = exports = compiler
 flatten = -> it.reduce (a,b) -> [].concat a, b
 
 class exports.CommonJSCompiler extends Compiler
-    CJS_HEADER   : "require.install('{ID}', function(require, exports, module, undefined){\n\n"
+    CJS_HEADER   : "require.install('{ID}', function(require, exports, module){\n\n"
     CJS_FOOTER   : "\n\n});\n"
     PAT_FULL_EXT : /\..*$/
     PAT_JS_EXT   : /(\.min)?\.mod(\.min)?\.js([?#].*)?$/i
@@ -56,7 +56,8 @@ class exports.CommonJSCompiler extends Compiler
         mod_id = path.normalize mod_parts.join('/')
         
         header = @CJS_HEADER.replace '{ID}', mod_id
-        header+data+@CJS_FOOTER
+        footer = @CJS_FOOTER.replace '{ID}', mod_id
+        header+data+footer
     
     doCompile: (text, wrapped, cb) ->
         ext = /\.([^\.]+)$/.exec(@info.src)[1]
@@ -70,8 +71,22 @@ class exports.CommonJSCompiler extends Compiler
  *  than the included `require.install()`.
  */
 class exports.CommonJSDefineCompiler extends CommonJSCompiler
-    CJS_HEADER   : "require.define('/node_modules/{ID}.js', function(require, module, exports, __dirname, __filename, undefined){\n\n"
+    CJS_HEADER   : "require.define('/node_modules/{ID}.js', function(require, module, exports, __dirname, __filename){\n\n"
     id           : 'commonjs_define'
+    -> super ...
+
+
+
+/**
+ * @class As CommonJSCompiler, but creates the module to comply with AMD's `define()`.
+ */
+class exports.AMDCompiler extends CommonJSCompiler
+    CJS_HEADER   : "define('{ID}', function(require, module, exports){\n\n"
+    CJS_FOOTER   : "\n\nreturn module.exports;\n});\n"
+    PAT_JS_EXT   : /(\.min)?\.amd(\.min)?\.js([?#].*)?$/i
+    
+    id           : 'amd'
+    match        : /((?:\.min)?)\.amd((?:\.min)?)\.js$/i
     -> super ...
 
 
@@ -113,6 +128,6 @@ class exports.PyYamlCompiler extends ExternalCompiler
 
 
 # Register Compilers
-for compiler of [ CommonJSCompiler, CommonJSDefineCompiler, PyYamlCompiler ]
+for compiler of [ CommonJSCompiler, CommonJSDefineCompiler, AMDCompiler, PyYamlCompiler ]
     register compiler
 

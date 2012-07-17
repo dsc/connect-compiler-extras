@@ -26,6 +26,7 @@ class exports.CommonJSCompiler extends Compiler
         coffee : 'coffee'
         jison  : 'jison'
     
+    drop_index      : false # whether to drop 'index.*' from the end of the module
     drop_full_ext   : true  # removes everything after the first dot in the basename, otherwise at most '.mod(.min)?.js'
     drop_pat        : null  # allows you to force a pattern to drop; otherwise determined by `drop_full_ext`.
     drop_path_parts : 0     # allows you to drop the mountpoint if your js files live in, say, /js
@@ -43,6 +44,7 @@ class exports.CommonJSCompiler extends Compiler
     
     compileSync: (data) ->
         nfo = @info
+        drop_index = nfo.drop_index      ? @drop_index
         drop_parts = nfo.drop_path_parts ? @drop_path_parts
         drop_full  = nfo.drop_full_ext   ? @drop_full_ext
         drop_pat   = nfo.drop_pat or @drop_pat or (if drop_full then @PAT_FULL_EXT else @PAT_JS_EXT)
@@ -52,7 +54,7 @@ class exports.CommonJSCompiler extends Compiler
             .replace drop_pat, ''
             .split '/'
             .slice drop_parts
-        mod_parts.pop() if mod_parts[mod_parts.length-1] is 'index'
+        mod_parts.pop() if mod_parts[mod_parts.length-1] is 'index' and drop_index
         mod_id = path.normalize mod_parts.join('/')
         
         header = @CJS_HEADER.replace '{ID}', mod_id

@@ -25,6 +25,7 @@ exports.CommonJSCompiler = CommonJSCompiler = (function(superclass){
     coffee: 'coffee',
     jison: 'jison'
   };
+  prototype.drop_index = false;
   prototype.drop_full_ext = true;
   prototype.drop_pat = null;
   prototype.drop_path_parts = 0;
@@ -46,8 +47,11 @@ exports.CommonJSCompiler = CommonJSCompiler = (function(superclass){
     }
   };
   prototype.compileSync = function(data){
-    var nfo, drop_parts, drop_full, drop_pat, mod_parts, mod_id, header, footer, __ref;
+    var nfo, drop_index, drop_parts, drop_full, drop_pat, mod_parts, mod_id, header, footer, __ref;
     nfo = this.info;
+    drop_index = (__ref = nfo.drop_index) != null
+      ? __ref
+      : this.drop_index;
     drop_parts = (__ref = nfo.drop_path_parts) != null
       ? __ref
       : this.drop_path_parts;
@@ -58,7 +62,7 @@ exports.CommonJSCompiler = CommonJSCompiler = (function(superclass){
       ? this.PAT_FULL_EXT
       : this.PAT_JS_EXT);
     mod_parts = nfo.url.slice(1).replace(drop_pat, '').split('/').slice(drop_parts);
-    if (mod_parts[mod_parts.length - 1] === 'index') {
+    if (mod_parts[mod_parts.length - 1] === 'index' && drop_index) {
       mod_parts.pop();
     }
     mod_id = path.normalize(mod_parts.join('/'));

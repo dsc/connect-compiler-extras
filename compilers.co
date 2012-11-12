@@ -80,10 +80,11 @@ class exports.CommonJSDefineCompiler extends CommonJSCompiler
 
 
 /**
- * @class As CommonJSCompiler, but creates the module to comply with AMD's `define()`.
+ * @class As CommonJSCompiler, but creates the module to comply with AMD's `define()`. Adding
+ * an empty dependancies array tells require.js to automatically introspect the require calls.
  */
 class exports.AMDCompiler extends CommonJSCompiler
-    CJS_HEADER   : "define('{ID}', function(require, exports, module){\n\n"
+    CJS_HEADER   : "define('{ID}', [], function(require, exports, module){\n\n"
     CJS_FOOTER   : "\n\nreturn module.exports;\n});\n"
     PAT_JS_EXT   : /(\.min)?\.amd(\.min)?\.js([?#].*)?$/i
     

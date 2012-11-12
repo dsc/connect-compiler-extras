@@ -1,7 +1,7 @@
-var fs, path, register, Compiler, ExternalCompiler, compiler, exports, flatten, CommonJSCompiler, CommonJSDefineCompiler, AMDCompiler, PyYamlCompiler, __ref, __i, __len;
+var fs, path, ref$, register, Compiler, ExternalCompiler, compiler, exports, flatten, CommonJSCompiler, CommonJSDefineCompiler, AMDCompiler, PyYamlCompiler, i$, len$;
 fs = require('fs');
 path = require('path');
-compiler = (__ref = require('connect-compiler'), register = __ref.register, Compiler = __ref.Compiler, ExternalCompiler = __ref.ExternalCompiler, __ref);
+compiler = (ref$ = require('connect-compiler'), register = ref$.register, Compiler = ref$.Compiler, ExternalCompiler = ref$.ExternalCompiler, ref$);
 module.exports = exports = compiler;
 flatten = function(it){
   return it.reduce(function(a, b){
@@ -10,7 +10,7 @@ flatten = function(it){
 };
 exports.CommonJSCompiler = CommonJSCompiler = (function(superclass){
   CommonJSCompiler.displayName = 'CommonJSCompiler';
-  var prototype = __extend(CommonJSCompiler, superclass).prototype, constructor = CommonJSCompiler;
+  var prototype = extend$(CommonJSCompiler, superclass).prototype, constructor = CommonJSCompiler;
   prototype.CJS_HEADER = "require.install('{ID}', function(require, exports, module){\n\n";
   prototype.CJS_FOOTER = "\n\n});\n";
   prototype.PAT_FULL_EXT = /\..*$/;
@@ -37,26 +37,26 @@ exports.CommonJSCompiler = CommonJSCompiler = (function(superclass){
     src = path.join(srcDir, pathname);
     if (this.match.exec(pathname)) {
       return (function(){
-        var __i, __ref, __len, __results = [];
-        for (__i = 0, __len = (__ref = this.ext).length; __i < __len; ++__i) {
-          ext = __ref[__i];
-          __results.push(src.replace(this.match, ext));
+        var i$, ref$, len$, results$ = [];
+        for (i$ = 0, len$ = (ref$ = this.ext).length; i$ < len$; ++i$) {
+          ext = ref$[i$];
+          results$.push(src.replace(this.match, ext));
         }
-        return __results;
+        return results$;
       }.call(this));
     }
   };
   prototype.compileSync = function(data){
-    var nfo, drop_index, drop_parts, drop_full, drop_pat, mod_parts, mod_id, header, footer, __ref;
+    var nfo, ref$, drop_index, drop_parts, drop_full, drop_pat, mod_parts, mod_id, header, footer;
     nfo = this.info;
-    drop_index = (__ref = nfo.drop_index) != null
-      ? __ref
+    drop_index = (ref$ = nfo.drop_index) != null
+      ? ref$
       : this.drop_index;
-    drop_parts = (__ref = nfo.drop_path_parts) != null
-      ? __ref
+    drop_parts = (ref$ = nfo.drop_path_parts) != null
+      ? ref$
       : this.drop_path_parts;
-    drop_full = (__ref = nfo.drop_full_ext) != null
-      ? __ref
+    drop_full = (ref$ = nfo.drop_full_ext) != null
+      ? ref$
       : this.drop_full_ext;
     drop_pat = nfo.drop_pat || this.drop_pat || (drop_full
       ? this.PAT_FULL_EXT
@@ -84,7 +84,7 @@ exports.CommonJSCompiler = CommonJSCompiler = (function(superclass){
  */
 exports.CommonJSDefineCompiler = CommonJSDefineCompiler = (function(superclass){
   CommonJSDefineCompiler.displayName = 'CommonJSDefineCompiler';
-  var prototype = __extend(CommonJSDefineCompiler, superclass).prototype, constructor = CommonJSDefineCompiler;
+  var prototype = extend$(CommonJSDefineCompiler, superclass).prototype, constructor = CommonJSDefineCompiler;
   prototype.CJS_HEADER = "require.define('/node_modules/{ID}.js', function(require, module, exports, __dirname, __filename){\n\n";
   prototype.id = 'commonjs_define';
   function CommonJSDefineCompiler(){
@@ -93,12 +93,13 @@ exports.CommonJSDefineCompiler = CommonJSDefineCompiler = (function(superclass){
   return CommonJSDefineCompiler;
 }(CommonJSCompiler));
 /**
- * @class As CommonJSCompiler, but creates the module to comply with AMD's `define()`.
+ * @class As CommonJSCompiler, but creates the module to comply with AMD's `define()`. Adding
+ * an empty dependancies array tells require.js to automatically introspect the require calls.
  */
 exports.AMDCompiler = AMDCompiler = (function(superclass){
   AMDCompiler.displayName = 'AMDCompiler';
-  var prototype = __extend(AMDCompiler, superclass).prototype, constructor = AMDCompiler;
-  prototype.CJS_HEADER = "define('{ID}', function(require, module, exports){\n\n";
+  var prototype = extend$(AMDCompiler, superclass).prototype, constructor = AMDCompiler;
+  prototype.CJS_HEADER = "define('{ID}', [], function(require, exports, module){\n\n";
   prototype.CJS_FOOTER = "\n\nreturn module.exports;\n});\n";
   prototype.PAT_JS_EXT = /(\.min)?\.amd(\.min)?\.js([?#].*)?$/i;
   prototype.id = 'amd';
@@ -110,7 +111,7 @@ exports.AMDCompiler = AMDCompiler = (function(superclass){
 }(CommonJSCompiler));
 exports.PyYamlCompiler = PyYamlCompiler = (function(superclass){
   PyYamlCompiler.displayName = 'PyYamlCompiler';
-  var YAML_TO_JSON, prototype = __extend(PyYamlCompiler, superclass).prototype, constructor = PyYamlCompiler;
+  var YAML_TO_JSON, prototype = extend$(PyYamlCompiler, superclass).prototype, constructor = PyYamlCompiler;
   prototype.id = 'pyyaml';
   prototype.match = /\.json$/i;
   prototype.ext = '.yaml';
@@ -122,11 +123,11 @@ exports.PyYamlCompiler = PyYamlCompiler = (function(superclass){
   }
   return PyYamlCompiler;
 }(ExternalCompiler));
-for (__i = 0, __len = (__ref = [CommonJSCompiler, CommonJSDefineCompiler, AMDCompiler, PyYamlCompiler]).length; __i < __len; ++__i) {
-  compiler = __ref[__i];
+for (i$ = 0, len$ = (ref$ = [CommonJSCompiler, CommonJSDefineCompiler, AMDCompiler, PyYamlCompiler]).length; i$ < len$; ++i$) {
+  compiler = ref$[i$];
   register(compiler);
 }
-function __extend(sub, sup){
+function extend$(sub, sup){
   function fun(){} fun.prototype = (sub.superclass = sup).prototype;
   (sub.prototype = new fun).constructor = sub;
   if (typeof sup.extended == 'function') sup.extended(sub);
